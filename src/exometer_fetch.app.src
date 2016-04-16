@@ -1,0 +1,12 @@
+{application, exometer_fetch,
+ [
+  {description, "Fetch helper for exometer"},
+  {vsn, git},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib,
+                  exometer_core
+                 ]},
+  {env, []}
+ ]}.

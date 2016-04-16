@@ -1,0 +1,7 @@
+deps
+ebin
+.rebar
+log
+_build
+*.lock
+.eunit
