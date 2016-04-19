@@ -42,7 +42,7 @@ The callback module may look like:
 -export([subscribe/2]).
 
 subscribe([test, metric] = Metric, histogram) ->
-{Metric, [max, min], [{key, <<"some_key">>}]};
+    {Metric, [max, min], [{key, <<"some_key">>}]};
 subscribe(_, _) -> [].
 ```
 
