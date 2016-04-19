@@ -1,4 +1,4 @@
-# exometer_fetch [![Build Status](https://travis-ci.org/GalaxyGorilla/exometer_fetch.svg)](https://travis-ci.org/GalaxyGorilla/exometer_fetch)
+# exometer_fetch [![Build Status](https://travis-ci.org/travelping/exometer_fetch.svg)](https://travis-ci.org/travelping/exometer_fetch)
 
 This reporter acts as subscription handler such that other services (e.g. http server) can fetch metrics from it.
 
@@ -8,7 +8,7 @@ Add exometer_fetch to your list of dependencies in rebar.config:
 
 ```erlang
 {deps, [
-    {exometer_fetch, ".*", {git, "https://github.com/galaxygorilla/exometer_fetch.git", "master"}}
+    {exometer_fetch, ".*", {git, "https://github.com/travelping/exometer_fetch.git", "master"}}
 ]}.
 ```
 
