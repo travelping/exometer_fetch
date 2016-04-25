@@ -110,7 +110,7 @@ format_datapoint(DP) when is_list(DP) -> format_datapoint(list_to_binary(DP));
 format_datapoint(<<"undefined">>) -> undefined;
 format_datapoint(<<"">>) -> undefined;
 format_datapoint(Binary) ->
-    case re:run(Binary, "^.[0-9]*$") of
+    case re:run(Binary, "^[0-9]*$") of
         {match, _} -> binary_to_integer(Binary);
         _NoMatch   -> binary_to_atom(Binary, latin1)
     end.
