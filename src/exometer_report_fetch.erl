@@ -19,10 +19,12 @@
 
 -define(DEFAULT_AUTOSUBSCRIBE, false).
 -define(DEFAULT_SUBSCRIPTIONS_MOD, undefined).
+-define(DEFAULT_KEY_PREFIX, <<"">>).
 
 -record(state, {autosubscribe :: boolean(),
                 subscriptions_module :: module(),
-                subscriptions ::  map()}).
+                subscriptions ::  map(),
+                key_prefix :: binary()}).
 
 
 %% ===================================================================
@@ -31,12 +33,16 @@
 exometer_init(Opts) ->
     Autosubscribe = proplists:get_value(autosubscribe, Opts, ?DEFAULT_AUTOSUBSCRIBE),
     SubscriptionsMod = proplists:get_value(subscriptions_module, Opts, ?DEFAULT_SUBSCRIPTIONS_MOD),
+    KeyPrefix = proplists:get_value(key_prefix, Opts, ?DEFAULT_KEY_PREFIX),
     State = #state{autosubscribe = Autosubscribe,
                    subscriptions_module = SubscriptionsMod,
-                   subscriptions = maps:new()},
+                   subscriptions = maps:new(),
+                   key_prefix = KeyPrefix},
     {ok, State}.
 
-exometer_subscribe(Metric, DataPoints, _Interval, Opts, #state{subscriptions=Subscriptions} = State)
+exometer_subscribe(Metric, DataPoints, _Interval,
+                   Opts, #state{subscriptions=Subscriptions,
+                                key_prefix = Prefix} = State)
   when is_list(Opts) ->
     case proplists:get_value(key, Opts, undefined) of
         undefined ->
@@ -44,7 +50,8 @@ exometer_subscribe(Metric, DataPoints, _Interval, Opts, #state{subscriptions=Sub
         Key when is_binary(Key) /= true ->
             {{error, key_not_binary}, State};
         Key ->
-            case maps:is_key(Key, Subscriptions) of
+            PrefixKey = <<Prefix/binary, Key/binary>>,
+            case maps:is_key(PrefixKey, Subscriptions) of
                 true ->
                     {ok, State};
                 false ->
@@ -52,7 +59,7 @@ exometer_subscribe(Metric, DataPoints, _Interval, Opts, #state{subscriptions=Sub
                                       true   -> DataPoints;
                                       false  -> [DataPoints]
                                   end,
-                    NewSubscriptions = maps:put(Key, {Metric, DataPoints1}, Subscriptions),
+                    NewSubscriptions = maps:put(PrefixKey, {Metric, DataPoints1}, Subscriptions),
                     {ok, State#state{subscriptions=NewSubscriptions}}
             end
     end;

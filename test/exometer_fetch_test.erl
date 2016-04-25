@@ -5,7 +5,8 @@
 subscribtions_module_test() ->
     Subscribers =  [ 
                     {reporters, [{exometer_report_fetch, [{autosubscribe, true}, 
-                                                         {subscriptions_module, exometer_fetch_subscribe_mod}]}]}],
+                                                          {subscriptions_module, exometer_fetch_subscribe_mod},
+                                                          {key_prefix, <<"/metrics">>}]}]}],
     error_logger:tty(false),
     application:set_env(lager, handlers, [{lager_console_backend, none}]),
     application:set_env(exometer, report, Subscribers),
@@ -17,9 +18,9 @@ subscribtions_module_test() ->
     timer:sleep(100),
     ?assertEqual(3, length(exometer_report:list_subscriptions(exometer_report_fetch))),
 
-    {ok, _} = exometer_fetch:fetch(<<"my_key1">>),
-    {ok, _} = exometer_fetch:fetch(<<"my_key1">>, min),
-    {ok, _} = exometer_fetch:fetch(<<"my">>),
+    {ok, _} = exometer_fetch:fetch(<<"/metrics/my_key1">>),
+    {ok, _} = exometer_fetch:fetch(<<"/metrics/my_key1">>, min),
+    {ok, _} = exometer_fetch:fetch(<<"/metrics/my">>),
 
     [application:stop(App) || App <- Apps],
     ok.
