@@ -18,9 +18,13 @@ subscribtions_module_test() ->
     timer:sleep(100),
     ?assertEqual(3, length(exometer_report:list_subscriptions(exometer_report_fetch))),
 
+    %% subscribed via callback
     {ok, _} = exometer_fetch:fetch(<<"/metrics/my_key1">>),
     {ok, _} = exometer_fetch:fetch(<<"/metrics/my_key1">>, min),
-    {ok, _} = exometer_fetch:fetch(<<"/metrics/my">>),
+    {ok, _} = exometer_fetch:fetch(<<"/metrics/">>),
+
+    %% there is no subscription to datapoint 'n'
+    {error, _} = exometer_fetch:fetch(<<"/metrics/my_key1">>, n),
 
     [application:stop(App) || App <- Apps],
     ok.

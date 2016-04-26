@@ -130,11 +130,16 @@ get_metrics(Key, DataPoint, Subscriptions) ->
             {error, not_found};
         MetricInfo when DataPoint =:= undefined ->
             proceed_single_metric(Key, MetricInfo, false);
-        {Metric, _DataPoints} ->
-            NewMetricInfo = {Metric, [DataPoint]},
-            case proceed_single_metric(Key, NewMetricInfo, false) of
-                {ok, [{_, FinalPayload}]} -> {ok, FinalPayload};
-                _Error -> {error, not_found}
+        {Metric, DataPoints} ->
+            case lists:member(DataPoint, DataPoints) of
+                true ->
+                    NewMetricInfo = {Metric, [DataPoint]},
+                    case proceed_single_metric(Key, NewMetricInfo, false) of
+                        {ok, [{_, FinalPayload}]} -> {ok, FinalPayload};
+                        _Error -> {error, not_found}
+                    end;
+                false ->
+                    {error, datapoint_not_found}
             end
     end.
 
