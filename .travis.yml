@@ -4,4 +4,11 @@ otp_release:
     - 18.0
     - 18.1
     - 18.2
-script: "rebar get-deps compile && rebar skip_deps=true eunit"
+    - 19.0
+    - 20.0
+install:
+  - wget https://s3.amazonaws.com/rebar3/rebar3 && chmod +x rebar3
+script:
+  - ./rebar3 get-deps
+  - ./rebar3 compile
+  - ./rebar3 eunit
